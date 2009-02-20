@@ -58,6 +58,9 @@ require 'rake/multi_task'
 require 'rake/rake_file_utils'
 require 'rake/file_list'
 
+require 'rake/default_loader'
+require 'rake/early_time'
+
 require 'rake/name_space'
 require 'rake/task_manager'
 require 'rake/application'
@@ -117,6 +120,7 @@ module Rake
   end
 
   EMPTY_TASK_ARGS = TaskArguments.new([], [])
+  EARLY = EarlyTime.instance
 end # module Rake
 
 # ###########################################################################
@@ -249,30 +253,3 @@ private(*RakeFileUtils.instance_methods(false))
 
 # Alias FileList to be available at the top level.
 FileList = Rake::FileList
-
-# ###########################################################################
-module Rake
-
-  # Default Rakefile loader used by +import+.
-  class DefaultLoader
-    def load(fn)
-      Kernel.load(File.expand_path(fn))
-    end
-  end
-
-  # EarlyTime is a fake timestamp that occurs _before_ any other time value.
-  class EarlyTime
-    include Comparable
-    include Singleton
-
-    def <=>(other)
-      -1
-    end
-
-    def to_s
-      "<EARLY TIME>"
-    end
-  end
-
-  EARLY = EarlyTime.instance
-end # module Rake
