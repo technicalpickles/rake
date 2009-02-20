@@ -105,6 +105,15 @@ module Rake
       application.original_dir
     end
 
+    # Yield each file or directory component.
+    def each_dir_parent(dir)    # :nodoc:
+      old_length = nil
+      while dir != '.' && dir.length != old_length
+        yield(dir)
+        old_length = dir.length
+        dir = File.dirname(dir)
+      end
+    end
   end
 
   EMPTY_TASK_ARGS = TaskArguments.new([], [])
@@ -237,21 +246,6 @@ end
 include RakeFileUtils
 private(*FileUtils.instance_methods(false))
 private(*RakeFileUtils.instance_methods(false))
-
-module Rake
-  class << self
-
-    # Yield each file or directory component.
-    def each_dir_parent(dir)    # :nodoc:
-      old_length = nil
-      while dir != '.' && dir.length != old_length
-        yield(dir)
-        old_length = dir.length
-        dir = File.dirname(dir)
-      end
-    end
-  end
-end # module Rake
 
 # Alias FileList to be available at the top level.
 FileList = Rake::FileList
