@@ -44,6 +44,7 @@ require 'rake/win32'
 require 'rake/ext/module'
 require 'rake/ext/string'
 require 'rake/ext/file_utils'
+require 'rake/ext/time'
 
 require 'rake/task_arguments'
 require 'rake/invocation_chain'
@@ -798,20 +799,6 @@ module Rake
 
   EARLY = EarlyTime.instance
 end # module Rake
-
-# ###########################################################################
-# Extensions to time to allow comparisons with an early time class.
-#
-class Time
-  alias rake_original_time_compare :<=>
-  def <=>(other)
-    if Rake::EarlyTime === other
-      - other.<=>(self)
-    else
-      rake_original_time_compare(other)
-    end
-  end
-end # class Time
 
 module Rake
 
