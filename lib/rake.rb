@@ -45,6 +45,7 @@ require 'rake/ext/module'
 require 'rake/ext/string'
 require 'rake/task_arguments'
 require 'rake/invocation_chain'
+require 'rake/clonable'
 
 ##############################################################################
 module Rake
@@ -92,34 +93,7 @@ module Rake
 
   end
 
-  # ##########################################################################
-  # Mixin for creating easily cloned objects.
-  #
-  module Cloneable
-    # Clone an object by making a new object and setting all the instance
-    # variables to the same values.
-    def dup
-      sibling = self.class.new
-      instance_variables.each do |ivar|
-        value = self.instance_variable_get(ivar)
-        new_value = value.clone rescue value
-        sibling.instance_variable_set(ivar, new_value)
-      end
-      sibling.taint if tainted?
-      sibling
-    end
-
-    def clone
-      sibling = dup
-      sibling.freeze if frozen?
-      sibling
-    end
-  end
-
-
   EMPTY_TASK_ARGS = TaskArguments.new([], [])
-
-
 end # module Rake
 
 module Rake
